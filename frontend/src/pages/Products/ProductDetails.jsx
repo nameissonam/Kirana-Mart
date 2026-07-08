@@ -6,7 +6,7 @@ import AuthRequiredModal from "../../components/AuthRequiredModal";
 import { CreditCard, MapPin, ShieldCheck, Star } from "../../components/Icons";
 import { useCart } from "../../context/CartContext";
 import { getCustomerUnitOptions } from "../../data/unitOptions";
-import { getProducts } from "../../services/productService";
+import { getProductById, getProducts } from "../../services/productService";
 import { getProductImage } from "../../utils/productImages";
 import { getRecommendations } from "../../utils/recommendations";
 import ProductSlider from "../../components/ProductSlider";
@@ -20,9 +20,40 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState("piece");
   const [showAuth, setShowAuth] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [error, setError] = useState("");
 
-  useEffect(() => { getProducts().then(setProducts).finally(() => setLoading(false)); }, []);
-  const product = products.find((item) => item._id === id);
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProductDetails = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const [productData, productList] = await Promise.all([
+          getProductById(id),
+          getProducts(),
+        ]);
+
+        if (!isMounted) return;
+        setProduct(productData);
+        setProducts(productList);
+      } catch (err) {
+        if (!isMounted) return;
+        setError(err.response?.status === 404 ? "Product not found" : "Could not load product details from the server.");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
   useEffect(() => {
     if (product) setSelectedVariant(product.unit || "piece");
   }, [product]);
@@ -37,7 +68,7 @@ export default function ProductDetails() {
   };
 
   if (loading) return <div className="grid min-h-96 place-items-center"><div className="h-10 w-10 animate-spin rounded-full border-4 border-green-600 border-t-transparent" /></div>;
-  if (!product) return <div className="py-20 text-center"><h1 className="text-2xl font-bold">Product not found</h1><button onClick={() => navigate('/products')} className="mt-4 text-green-700">Browse products</button></div>;
+  if (!product) return <div className="py-20 text-center"><h1 className="text-2xl font-bold">{error || "Product not found"}</h1><button onClick={() => navigate('/products')} className="mt-4 text-green-700">Browse products</button></div>;
 
   const stock = Number(product.stock);
   const hasStockLimit = Number.isFinite(stock);

@@ -14,11 +14,21 @@ const includesAny = (product, terms) => {
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [showAuth, setShowAuth] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getProducts().then(setProducts).finally(() => setLoading(false));
+    getProducts()
+      .then((data) => {
+        setProducts(data);
+        setLoadError("");
+      })
+      .catch(() => {
+        setProducts([]);
+        setLoadError("Products could not be loaded from the server right now.");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const sections = useMemo(() => ({
@@ -96,6 +106,18 @@ export default function Home() {
 
       {loading ? (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{[1, 2, 3, 4].map((id) => <div key={id} className="aspect-[.72] animate-pulse rounded-2xl bg-slate-200" />)}</div>
+      ) : loadError ? (
+        <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-center">
+          <h2 className="text-lg font-black text-amber-900">Catalog is not connected</h2>
+          <p className="mt-2 text-sm font-semibold text-amber-800">{loadError}</p>
+          <button onClick={() => goTo()} className="mt-4 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-extrabold text-white">Try products page</button>
+        </div>
+      ) : products.length === 0 ? (
+        <div className="rounded-3xl border border-lime-100 bg-white p-6 text-center shadow-sm">
+          <h2 className="text-lg font-black text-slate-900">No products available yet</h2>
+          <p className="mt-2 text-sm font-semibold text-slate-500">Add products from the owner dashboard to show them here.</p>
+          <button onClick={() => goTo()} className="mt-4 rounded-2xl bg-lime-500 px-5 py-3 text-sm font-extrabold text-slate-950">Open catalog</button>
+        </div>
       ) : (
         <>
           <ProductSection title="🔥 Best Sellers" eyebrow="Loved by shoppers" products={sections.bestSellers} onViewAll={() => goTo("sort=best-sellers")} onAuthRequired={() => setShowAuth(true)} />

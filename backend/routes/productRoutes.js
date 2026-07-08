@@ -8,6 +8,7 @@ const router = express.Router();
 const {
   createProduct,
   getProducts,
+  getProductById,
   updateProduct,
   deleteProduct,
   seedProducts,
@@ -44,6 +45,9 @@ const upload = multer({
 
 // GET all products (Public)
 router.get("/", getProducts);
+
+// GET single product (Public)
+router.get("/:id", getProductById);
 
 // POST create product (Admin only)
 router.post("/", protect, admin, createProduct);
