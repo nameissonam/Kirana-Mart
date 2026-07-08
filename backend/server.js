@@ -7,8 +7,10 @@ const fs = require("fs");
 
 const connectDB = require("./config/db");
 const User = require("./models/User");
+const Product = require("./models/Product");
 const Settings = require("./models/Settings");
 const { DEFAULT_STORE_ADDRESS } = require("./models/Settings");
+const defaultProducts = require("./data/defaultProducts");
 
 const app = express();
 
@@ -109,6 +111,33 @@ const seedCategories = async () => {
   }
 };
 
+// Seed starter products without deleting products added from the admin dashboard.
+const seedProducts = async () => {
+  try {
+    const existingCount = await Product.countDocuments();
+    if (existingCount >= 12) {
+      console.log("✓ Product catalog already seeded");
+      return;
+    }
+
+    let addedCount = 0;
+    for (const product of defaultProducts) {
+      const result = await Product.updateOne(
+        { name: product.name },
+        { $setOnInsert: product },
+        { upsert: true }
+      );
+      if (result.upsertedCount > 0) {
+        addedCount += 1;
+      }
+    }
+
+    console.log(`✓ Starter products seeded: ${addedCount}`);
+  } catch (error) {
+    console.error("Error seeding products:", error.message);
+  }
+};
+
 // Seed admin account on startup
 const seedAdmin = async () => {
   try {
@@ -138,6 +167,7 @@ const initApp = async () => {
     await seedAdmin();
     await seedSettings();
     await seedCategories();
+    await seedProducts();
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
