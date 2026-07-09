@@ -99,7 +99,7 @@ const seedCategories = async () => {
     for (const cat of defaultCategories) {
       const result = await Category.updateOne(
         { name: cat.name },
-        { $setOnInsert: cat },
+        { $set: cat },
         { upsert: true }
       );
       if (result.upsertedCount > 0) {

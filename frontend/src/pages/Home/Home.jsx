@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AuthRequiredModal from "../../components/AuthRequiredModal";
 import ProductSection from "../../components/ProductSection";
 import RotatingQuote from "../../components/RotatingQuote";
-import { categories } from "../../data/categories";
+import { catalogGroups } from "../../data/categories";
 import { getProducts } from "../../services/productService";
 
 const includesAny = (product, terms) => {
@@ -36,13 +36,12 @@ export default function Home() {
     topOffers: products.filter((product) => product.discountPercentage > 0).sort((a, b) => b.discountPercentage - a.discountPercentage).slice(0, 8),
     dailyStaples: products.filter((product) => includesAny(product, ["milk", "bread", "egg", "rice", "atta", "dal", "staple"])).slice(0, 8),
     snacks: products.filter((product) => includesAny(product, ["snack", "chips", "biscuit", "cookie", "namkeen", "chocolate"])).slice(0, 8),
-    homeKitchen: products.filter((product) => product.category === "Home & Kitchen").slice(0, 8),
-    beauty: products.filter((product) => product.category === "Beauty & Hygiene").slice(0, 8),
-    cleaning: products.filter((product) => product.category === "Cleaning & Household").slice(0, 8),
+    homeKitchen: products.filter((product) => includesAny(product, ["home", "kitchen", "kitchenware", "appliance"])).slice(0, 8),
+    beauty: products.filter((product) => includesAny(product, ["beauty", "personal care", "bath", "body", "hair", "skin"])).slice(0, 8),
+    cleaning: products.filter((product) => includesAny(product, ["cleaning", "cleaner", "repellent", "household"])).slice(0, 8),
   }), [products]);
 
   const goTo = (query = "") => navigate(query ? `/products?${query}` : "/products");
-  const featuredCategories = categories.slice(0, 12);
 
   return (
     <div className="space-y-6 pb-10">
@@ -68,30 +67,37 @@ export default function Home() {
           </div>
           <button onClick={() => goTo()} className="rounded-xl bg-lime-100 px-3 py-2 text-xs font-extrabold text-lime-800">View all</button>
         </div>
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 lg:grid-cols-12">
-          {featuredCategories.map((category) => (
-            <button key={category.name} onClick={() => goTo(`category=${encodeURIComponent(category.name)}`)} className="group flex flex-col items-center gap-2 text-center">
-              <span className="grid h-16 w-16 overflow-hidden rounded-2xl bg-lime-50 p-1 shadow-sm transition group-hover:shadow-md">
-                <img src={category.image} alt={category.name} loading="lazy" className="h-full w-full object-cover" />
-              </span>
-              <span className="line-clamp-2 min-h-8 text-xs font-bold text-slate-800 group-hover:text-lime-700">{category.name}</span>
-            </button>
+        <div className="space-y-5">
+          {catalogGroups.map((group) => (
+            <div key={group.name}>
+              <h3 className="mb-3 text-sm font-black text-slate-800">{group.name}</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+                {group.categories.map((category) => (
+                  <button key={category.name} onClick={() => goTo(`category=${encodeURIComponent(category.name)}`)} className="group flex flex-col items-center gap-2 text-center">
+                    <span className="grid h-16 w-16 overflow-hidden rounded-2xl bg-lime-50 p-1 shadow-sm transition group-hover:shadow-md">
+                      <img src={category.image} alt={category.name} loading="lazy" className="h-full w-full object-cover" />
+                    </span>
+                    <span className="line-clamp-2 min-h-8 text-xs font-bold text-slate-800 group-hover:text-lime-700">{category.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
-          <button onClick={() => goTo("category=Milk%20%26%20Dairy")} className="rounded-3xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <button onClick={() => goTo("category=Dairy%2C%20Bread%20%26%20Eggs")} className="rounded-3xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
             <p className="text-xs font-black uppercase text-lime-700">Fresh corner</p>
             <h2 className="mt-2 text-xl font-black text-slate-900">Milk, bread & eggs</h2>
             <p className="mt-2 text-sm font-semibold text-slate-500">Morning essentials in minutes</p>
           </button>
-          <button onClick={() => goTo("category=Snacks")} className="rounded-3xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <button onClick={() => goTo("category=Chips%20%26%20Namkeen")} className="rounded-3xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
             <p className="text-xs font-black uppercase text-lime-700">Snack attack</p>
             <h2 className="mt-2 text-xl font-black text-slate-900">Chips, biscuits & more</h2>
             <p className="mt-2 text-sm font-semibold text-slate-500">Movie-night basket ready</p>
           </button>
-          <button onClick={() => goTo("category=Cleaning%20%26%20Household")} className="rounded-3xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <button onClick={() => goTo("category=Cleaners%20%26%20Repellents")} className="rounded-3xl bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
             <p className="text-xs font-black uppercase text-lime-700">Home care</p>
             <h2 className="mt-2 text-xl font-black text-slate-900">Cleaning essentials</h2>
             <p className="mt-2 text-sm font-semibold text-slate-500">Detergents, dish wash, floor care</p>
@@ -122,11 +128,11 @@ export default function Home() {
         <>
           <ProductSection title="🔥 Best Sellers" eyebrow="Loved by shoppers" products={sections.bestSellers} onViewAll={() => goTo("sort=best-sellers")} onAuthRequired={() => setShowAuth(true)} />
           <ProductSection title="🎉 Top Offers" eyebrow="More value in every basket" products={sections.topOffers} onViewAll={() => goTo("sort=price-low")} onAuthRequired={() => setShowAuth(true)} tone="yellow" />
-          <ProductSection title="🥛 Daily Staples" eyebrow="Everyday kitchen favourites" products={sections.dailyStaples} onViewAll={() => goTo("category=Staples%20%26%20Spices")} onAuthRequired={() => setShowAuth(true)} tone="green" />
-          <ProductSection title="🍪 Snacks" eyebrow="Crunchy, sweet and savoury" products={sections.snacks} onViewAll={() => goTo("category=Snacks")} onAuthRequired={() => setShowAuth(true)} tone="rose" />
-          <ProductSection title="🏠 Home & Kitchen" eyebrow="Smart essentials for your space" products={sections.homeKitchen} onViewAll={() => goTo("category=Home%20%26%20Kitchen")} onAuthRequired={() => setShowAuth(true)} tone="blue" />
-          <ProductSection title="💄 Beauty & Hygiene" eyebrow="Feel good every day" products={sections.beauty} onViewAll={() => goTo("category=Beauty%20%26%20Hygiene")} onAuthRequired={() => setShowAuth(true)} tone="violet" />
-          <ProductSection title="🧹 Cleaning & Household" eyebrow="A fresher, happier home" products={sections.cleaning} onViewAll={() => goTo("category=Cleaning%20%26%20Household")} onAuthRequired={() => setShowAuth(true)} tone="green" />
+          <ProductSection title="🥛 Daily Staples" eyebrow="Everyday kitchen favourites" products={sections.dailyStaples} onViewAll={() => goTo("category=Atta%2C%20Rice%20%26%20Dal")} onAuthRequired={() => setShowAuth(true)} tone="green" />
+          <ProductSection title="🍪 Snacks" eyebrow="Crunchy, sweet and savoury" products={sections.snacks} onViewAll={() => goTo("category=Chips%20%26%20Namkeen")} onAuthRequired={() => setShowAuth(true)} tone="rose" />
+          <ProductSection title="🏠 Home & Kitchen" eyebrow="Smart essentials for your space" products={sections.homeKitchen} onViewAll={() => goTo("category=Kitchenware%20%26%20Appliances")} onAuthRequired={() => setShowAuth(true)} tone="blue" />
+          <ProductSection title="💄 Beauty & Hygiene" eyebrow="Feel good every day" products={sections.beauty} onViewAll={() => goTo("category=Bath%20%26%20Body")} onAuthRequired={() => setShowAuth(true)} tone="violet" />
+          <ProductSection title="🧹 Cleaning & Household" eyebrow="A fresher, happier home" products={sections.cleaning} onViewAll={() => goTo("category=Cleaners%20%26%20Repellents")} onAuthRequired={() => setShowAuth(true)} tone="green" />
         </>
       )}
 

@@ -11,6 +11,14 @@ const categorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    parent: {
+      type: String,
+      default: "Groceries",
+    },
+    displayOrder: {
+      type: Number,
+      default: 0,
+    },
     image: {
       type: String,
       default: "",

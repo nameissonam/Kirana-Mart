@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { defaultProductImage, getProductImage } from "../../utils/productImages";
 import { optimizeProductImage, validateProductImage } from "../../utils/imageUpload";
-import { sortByCategory } from "../../data/categories";
+import { groupCategories, sortByCategory } from "../../data/categories";
 import { PACK_UNIT_OPTIONS, WEIGHT_UNIT_OPTIONS, getUnitOptions } from "../../data/unitOptions";
 import { PlusCircle, Edit, Trash, RefreshCw, Filter, Search } from "../../components/Icons";
 import { apiUrl, assetUrl } from "../../config/api";
@@ -65,7 +65,7 @@ function AdminProducts() {
     ]).then(([productsResponse, categoriesResponse]) => {
       if (!active) return;
       setProducts(sortByCategory(productsResponse.data));
-      setCategories(categoriesResponse.data);
+      setCategories(sortByCategory(categoriesResponse.data));
       if (categoriesResponse.data.length > 0) {
         setFormData((prev) => prev.category ? prev : { ...prev, category: categoriesResponse.data[0].name });
       }
@@ -288,10 +288,14 @@ function AdminProducts() {
             className="bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none cursor-pointer"
           >
             <option value="All">All Categories</option>
-            {categories.map((c) => (
-              <option key={c._id} value={c.name}>
-                {c.name}
-              </option>
+            {groupCategories(categories).map((group) => (
+              <optgroup key={group.name} label={group.name}>
+                {group.categories.map((c) => (
+                  <option key={c._id || c.name} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>
@@ -446,10 +450,14 @@ function AdminProducts() {
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="w-full bg-slate-50 border border-gray-250 rounded-xl px-3 py-2 text-xs text-gray-750 focus:outline-none cursor-pointer"
                 >
-                  {categories.map((c) => (
-                    <option key={c._id} value={c.name}>
-                      {c.name}
-                    </option>
+                  {groupCategories(categories).map((group) => (
+                    <optgroup key={group.name} label={group.name}>
+                      {group.categories.map((c) => (
+                        <option key={c._id || c.name} value={c.name}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>

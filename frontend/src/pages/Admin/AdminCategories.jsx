@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { PlusCircle, Edit, Trash, RefreshCw } from "../../components/Icons";
-import { sortByCategory } from "../../data/categories";
+import { catalogGroups, groupCategories, sortByCategory } from "../../data/categories";
 import { apiUrl } from "../../config/api";
 
 const CATEGORIES_API = apiUrl("/api/categories");
@@ -23,6 +23,8 @@ function AdminCategories() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    parent: catalogGroups[0].name,
+    displayOrder: 0,
   });
 
   const fetchCategories = async () => {
@@ -46,7 +48,7 @@ function AdminCategories() {
 
   const handleOpenAddModal = () => {
     setModalMode("add");
-    setFormData({ name: "", description: "" });
+    setFormData({ name: "", description: "", parent: catalogGroups[0].name, displayOrder: categories.length + 1 });
     setModalOpen(true);
   };
 
@@ -56,6 +58,8 @@ function AdminCategories() {
     setFormData({
       name: category.name,
       description: category.description,
+      parent: category.parent || catalogGroups[0].name,
+      displayOrder: category.displayOrder || 0,
     });
     setModalOpen(true);
   };
@@ -149,35 +153,43 @@ function AdminCategories() {
             <table className="w-full border-collapse text-left text-sm text-gray-650">
               <thead>
                 <tr className="bg-slate-50 border-b border-gray-100 text-gray-400 font-bold text-[10px] uppercase tracking-wider">
-                  <th className="py-4 px-6 w-1/3">Category Name</th>
+                  <th className="py-4 px-6 w-1/3">Category / Subcategory</th>
                   <th className="py-4 px-6 w-1/2">Description</th>
                   <th className="py-4 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {categories.map((cat) => (
-                  <tr key={cat._id} className="hover:bg-slate-50/50 transition">
-                    <td className="py-4 px-6">
-                      <span className="font-bold text-gray-800 text-sm">{cat.name}</span>
-                    </td>
-                    <td className="py-4 px-6 text-xs text-gray-500 font-medium leading-relaxed">
-                      {cat.description}
-                    </td>
-                    <td className="py-4 px-6 text-right space-x-3">
-                      <button
-                        onClick={() => handleOpenEditModal(cat)}
-                        className="text-gray-400 hover:text-brand-600 transition cursor-pointer inline-block"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCategory(cat._id)}
-                        className="text-gray-400 hover:text-red-650 transition cursor-pointer inline-block"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
+                {groupCategories(categories).map((group) => (
+                  <Fragment key={group.name}>
+                    <tr className="bg-lime-50/60">
+                      <td colSpan="3" className="px-6 py-3 text-[10px] font-black uppercase tracking-wider text-lime-800">{group.name}</td>
+                    </tr>
+                    {group.categories.map((cat) => (
+                      <tr key={cat._id || cat.name} className="hover:bg-slate-50/50 transition">
+                        <td className="py-4 px-6">
+                          <span className="font-bold text-gray-800 text-sm">{cat.name}</span>
+                          {cat.displayOrder ? <span className="ml-2 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-400">#{cat.displayOrder}</span> : null}
+                        </td>
+                        <td className="py-4 px-6 text-xs text-gray-500 font-medium leading-relaxed">
+                          {cat.description}
+                        </td>
+                        <td className="py-4 px-6 text-right space-x-3">
+                          <button
+                            onClick={() => handleOpenEditModal(cat)}
+                            className="text-gray-400 hover:text-brand-600 transition cursor-pointer inline-block"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCategory(cat._id)}
+                            className="text-gray-400 hover:text-red-650 transition cursor-pointer inline-block"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </Fragment>
                 ))}
               </tbody>
             </table>
@@ -205,6 +217,32 @@ function AdminCategories() {
                   placeholder="e.g. Staples & Spices"
                   className="w-full bg-slate-50 border border-gray-250 rounded-xl px-3.5 py-2.5 text-xs text-gray-850 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Parent Category</label>
+                  <select
+                    value={formData.parent}
+                    onChange={(e) => setFormData({ ...formData, parent: e.target.value })}
+                    className="w-full bg-slate-50 border border-gray-250 rounded-xl px-3.5 py-2.5 text-xs text-gray-850 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  >
+                    {catalogGroups.map((group) => (
+                      <option key={group.name} value={group.name}>{group.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Order</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.displayOrder}
+                    onChange={(e) => setFormData({ ...formData, displayOrder: e.target.value })}
+                    className="w-full bg-slate-50 border border-gray-250 rounded-xl px-3.5 py-2.5 text-xs text-gray-850 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                  />
+                </div>
               </div>
 
               <div>

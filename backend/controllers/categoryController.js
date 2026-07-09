@@ -5,7 +5,7 @@ const Category = require("../models/Category");
 // @access  Public
 const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.find().sort({ displayOrder: 1, name: 1 });
     res.json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -17,14 +17,20 @@ const getCategories = async (req, res) => {
 // @access  Private/Admin
 const createCategory = async (req, res) => {
   try {
-    const { name, description, image } = req.body;
+    const { name, description, image, parent, displayOrder } = req.body;
 
     const exists = await Category.findOne({ name });
     if (exists) {
       return res.status(400).json({ message: "Category already exists" });
     }
 
-    const category = await Category.create({ name, description, image: image || "" });
+    const category = await Category.create({
+      name,
+      description,
+      image: image || "",
+      parent: parent || "Groceries",
+      displayOrder: Number(displayOrder || 0),
+    });
     res.status(201).json(category);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -36,12 +42,16 @@ const createCategory = async (req, res) => {
 // @access  Private/Admin
 const updateCategory = async (req, res) => {
   try {
-    const { name, description, image } = req.body;
+    const { name, description, image, parent, displayOrder } = req.body;
     const category = await Category.findById(req.params.id);
 
     if (category) {
       category.name = name || category.name;
       category.description = description || category.description;
+      category.parent = parent || category.parent;
+      if (displayOrder !== undefined) {
+        category.displayOrder = Number(displayOrder);
+      }
       if (image !== undefined) {
         category.image = image;
       }

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getProducts } from "../../services/productService";
 import ProductCard from "../../components/ProductCard";
 import AuthRequiredModal from "../../components/AuthRequiredModal";
 import { Filter, Search, Star, ShieldCheck } from "../../components/Icons";
 import BackButton from "../../components/BackButton";
-import { categoryNames, matchesCategory, sortByCategory } from "../../data/categories";
+import { catalogGroups, matchesCategory, sortByCategory } from "../../data/categories";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,8 +23,6 @@ function Products() {
   const [maxPrice, setMaxPrice] = useState(500);
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "featured");
-
-  const categoriesList = ["All", ...categoryNames];
 
   // Sync state with URL params
   useEffect(() => {
@@ -187,18 +185,34 @@ function Products() {
               Category
             </h4>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:block md:space-y-2.5">
-              {categoriesList.map((cat) => (
-                <label key={cat} className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={cat === "All" ? selectedCategories.length === 0 : selectedCategories.some((category) => category.toLowerCase() === cat.toLowerCase())}
-                    onChange={() => handleCategoryChange(cat)}
-                    className="accent-brand-600 cursor-pointer rounded"
-                  />
-                  <span className={(cat === "All" ? selectedCategories.length === 0 : selectedCategories.some((category) => category.toLowerCase() === cat.toLowerCase())) ? "font-bold text-brand-700" : "hover:text-gray-800"}>
-                    {cat}
-                  </span>
-                </label>
+              <label className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.length === 0}
+                  onChange={() => handleCategoryChange("All")}
+                  className="accent-brand-600 cursor-pointer rounded"
+                />
+                <span className={selectedCategories.length === 0 ? "font-bold text-brand-700" : "hover:text-gray-800"}>
+                  All
+                </span>
+              </label>
+              {catalogGroups.map((group) => (
+                <div key={group.name} className="space-y-2">
+                  <p className="pt-2 text-[10px] font-black uppercase tracking-wider text-gray-400">{group.name}</p>
+                  {group.categories.map((cat) => (
+                    <label key={cat.name} className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={selectedCategories.some((category) => category.toLowerCase() === cat.name.toLowerCase())}
+                        onChange={() => handleCategoryChange(cat.name)}
+                        className="accent-brand-600 cursor-pointer rounded"
+                      />
+                      <span className={selectedCategories.some((category) => category.toLowerCase() === cat.name.toLowerCase()) ? "font-bold text-brand-700" : "hover:text-gray-800"}>
+                        {cat.name}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               ))}
             </div>
           </div>
