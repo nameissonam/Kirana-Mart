@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { getProductImage } from "../utils/productImages";
+import { getProductImage, handleProductImageError } from "../utils/productImages";
 import { getProductDisplayName } from "../utils/productDisplay";
 import { DEFAULT_STORE_SETTINGS, getStoreSettings } from "../services/settingsService";
 import { Close, Trash, Plus, Minus, ShoppingCart } from "./Icons";
@@ -93,6 +93,7 @@ function CartDrawer() {
                     <img
                       src={getProductImage(item)}
                       alt={getProductDisplayName(item)}
+                      onError={(event) => handleProductImageError(event, item)}
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />

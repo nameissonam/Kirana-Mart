@@ -17,12 +17,38 @@ const imageMap = [
 
 export const defaultProductImage = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=700&q=85";
 
-export const getProductImage = (product = {}) => {
-  const image = product.image || product.images?.find(Boolean) || "";
+const resolveImageUrl = (image = "") => {
   if (image.startsWith("http") || image.startsWith("data:")) return image;
   if (image.startsWith("/uploads")) return assetUrl(image);
   if (image.startsWith("uploads")) return assetUrl(`/${image}`);
   if (image.startsWith("/")) return image;
+  return "";
+};
+
+export const getProductImageCandidates = (product = {}) => {
+  const images = [
+    product.image,
+    ...(Array.isArray(product.images) ? product.images : []),
+  ]
+    .filter(Boolean)
+    .map(resolveImageUrl)
+    .filter(Boolean);
+
   const text = `${product.brand || ""} ${product.name || ""}`;
-  return imageMap.find(([pattern]) => pattern.test(text))?.[1] || defaultProductImage;
+  const mappedImage = imageMap.find(([pattern]) => pattern.test(text))?.[1];
+
+  return [...new Set([...images, mappedImage, defaultProductImage].filter(Boolean))];
+};
+
+export const getProductImage = (product = {}) => {
+  return getProductImageCandidates(product)[0] || defaultProductImage;
+};
+
+export const handleProductImageError = (event, product = {}) => {
+  const candidates = getProductImageCandidates(product);
+  const currentIndex = Number(event.currentTarget.dataset.imageIndex || 0);
+  const nextImage = candidates[currentIndex + 1] || defaultProductImage;
+
+  event.currentTarget.dataset.imageIndex = String(currentIndex + 1);
+  event.currentTarget.src = nextImage;
 };

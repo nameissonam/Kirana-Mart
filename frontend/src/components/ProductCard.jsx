@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { getCustomerUnitOptions } from "../data/unitOptions";
 import { getProductDisplayName } from "../utils/productDisplay";
-import { getProductImage } from "../utils/productImages";
+import { getProductImage, handleProductImageError } from "../utils/productImages";
 import { Minus, Plus, Star } from "./Icons";
 
 export default function ProductCard({ product, onAuthRequired, compact = false }) {
@@ -42,7 +42,7 @@ export default function ProductCard({ product, onAuthRequired, compact = false }
     <article className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-lime-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg hover:shadow-lime-100">
       <Link to={`/product/${product._id}`} className="flex flex-1 cursor-pointer flex-col">
         <div className={`relative grid place-items-center overflow-hidden bg-lime-50/60 p-3 ${compact ? "h-36" : "h-48"}`}>
-          <img src={getProductImage(product)} alt={displayName} loading="lazy" className="h-full max-h-full w-full object-contain transition duration-300 group-hover:scale-105" />
+          <img src={getProductImage(product)} alt={displayName} loading="lazy" onError={(event) => handleProductImageError(event, product)} className="h-full max-h-full w-full object-contain transition duration-300 group-hover:scale-105" />
           {discount > 0 && <span className="absolute left-2 top-2 rounded-full bg-lime-600 px-2 py-1 text-[10px] font-bold text-white">{discount}% OFF</span>}
           {isOutOfStock && <span className="absolute inset-0 grid place-items-center bg-white/80 text-xs font-bold uppercase text-slate-500">{isPreviewOnly ? "Preview only" : "Out of stock"}</span>}
         </div>

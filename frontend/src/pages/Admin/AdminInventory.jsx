@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Edit, RefreshCw, AlertTriangle } from "../../components/Icons";
-import { getProductImage } from "../../utils/productImages";
+import { getProductImage, handleProductImageError } from "../../utils/productImages";
 import { sortByCategory } from "../../data/categories";
 import { apiUrl } from "../../config/api";
 
@@ -160,7 +160,7 @@ function AdminInventory() {
                     <tr key={p._id} className={`hover:bg-slate-50/30 transition ${isOut ? "bg-red-50/10" : isLow ? "bg-amber-50/10" : ""}`}>
                       {/* Product Name */}
                       <td className="py-4 px-6">
-                        <div className="flex items-center gap-3"><img src={getProductImage(p)} alt="" className="h-10 w-10 rounded-lg object-cover" /><span className="font-bold text-gray-800 text-sm">{p.name}</span></div>
+                        <div className="flex items-center gap-3"><img src={getProductImage(p)} alt="" onError={(event) => handleProductImageError(event, p)} className="h-10 w-10 rounded-lg object-cover" /><span className="font-bold text-gray-800 text-sm">{p.name}</span></div>
                       </td>
 
                       {/* Category */}

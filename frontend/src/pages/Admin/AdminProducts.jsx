@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-import { defaultProductImage, getProductImage } from "../../utils/productImages";
+import { defaultProductImage, getProductImage, handleProductImageError } from "../../utils/productImages";
 import { optimizeProductImage, validateProductImage } from "../../utils/imageUpload";
 import { groupCategories, sortByCategory } from "../../data/categories";
 import { PACK_UNIT_OPTIONS, WEIGHT_UNIT_OPTIONS, getUnitOptions } from "../../data/unitOptions";
@@ -341,10 +341,7 @@ function AdminProducts() {
                           src={getProductImage(p)}
                           alt={p.name}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = defaultProductImage;
-                          }}
+                          onError={(event) => handleProductImageError(event, p)}
                         />
                       </div>
                     </td>
