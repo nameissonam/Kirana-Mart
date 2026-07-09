@@ -9,6 +9,7 @@ import { catalogGroups, matchesCategory, sortByCategory } from "../../data/categ
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const initialCategory = searchParams.get("category")?.split(",").filter(Boolean)[0] || "";
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,18 +18,23 @@ function Products() {
 
   // Filter & Sort States
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
-  const [selectedCategories, setSelectedCategories] = useState(
-    searchParams.get("category") ? searchParams.get("category").split(",").filter(Boolean).slice(0, 1) : []
-  );
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [maxPrice, setMaxPrice] = useState(500);
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "featured");
 
   // Sync state with URL params
   useEffect(() => {
+    const categoryFromUrl = searchParams.get("category")?.split(",").filter(Boolean)[0] || "";
     setSearchQuery(searchParams.get("search") || "");
-    setSelectedCategories(searchParams.get("category") ? searchParams.get("category").split(",").filter(Boolean).slice(0, 1) : []);
+    setSelectedCategory(categoryFromUrl);
     setSortBy(searchParams.get("sort") || "featured");
+
+    if (searchParams.get("category")?.includes(",")) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.set("category", categoryFromUrl);
+      setSearchParams(nextParams, { replace: true });
+    }
   }, [searchParams]);
 
   // Fetch products from API
@@ -65,8 +71,8 @@ function Products() {
     }
 
     // Filter by Category
-    if (selectedCategories.length > 0) {
-      result = result.filter((p) => selectedCategories.some((category) => matchesCategory(p.category, category)));
+    if (selectedCategory) {
+      result = result.filter((p) => matchesCategory(p.category, selectedCategory));
     }
 
     // Filter by Price
@@ -91,12 +97,12 @@ function Products() {
     }
 
     setFilteredProducts(sortBy === "featured" ? sortByCategory(result) : result);
-  }, [products, searchQuery, selectedCategories, maxPrice, onlyInStock, sortBy]);
+  }, [products, searchQuery, selectedCategory, maxPrice, onlyInStock, sortBy]);
 
   const handleClearFilters = () => {
     setSearchParams({});
     setSearchQuery("");
-    setSelectedCategories([]);
+    setSelectedCategory("");
     setMaxPrice(500);
     setOnlyInStock(false);
     setSortBy("featured");
@@ -106,23 +112,18 @@ function Products() {
     const nextParams = new URLSearchParams(searchParams);
     if (cat === "All") {
       nextParams.delete("category");
-      setSelectedCategories([]);
+      setSelectedCategory("");
     } else {
-      setSelectedCategories([cat]);
+      setSelectedCategory(cat);
       nextParams.set("category", cat);
     }
     setSearchParams(nextParams);
   };
 
-  const removeSelectedCategory = (cat) => {
-    const nextCategories = selectedCategories.filter((category) => category !== cat);
+  const removeSelectedCategory = () => {
     const nextParams = new URLSearchParams(searchParams);
-    setSelectedCategories(nextCategories);
-    if (nextCategories.length > 0) {
-      nextParams.set("category", nextCategories.join(","));
-    } else {
-      nextParams.delete("category");
-    }
+    setSelectedCategory("");
+    nextParams.delete("category");
     setSearchParams(nextParams);
   };
 
@@ -180,11 +181,11 @@ function Products() {
                 <input
                   type="radio"
                   name="category"
-                  checked={selectedCategories.length === 0}
+                  checked={!selectedCategory}
                   onChange={() => handleCategoryChange("All")}
                   className="accent-brand-600 cursor-pointer rounded"
                 />
-                <span className={selectedCategories.length === 0 ? "font-bold text-brand-700" : "hover:text-gray-800"}>
+                <span className={!selectedCategory ? "font-bold text-brand-700" : "hover:text-gray-800"}>
                   All
                 </span>
               </label>
@@ -196,11 +197,11 @@ function Products() {
                       <input
                         type="radio"
                         name="category"
-                        checked={selectedCategories.some((category) => category.toLowerCase() === cat.name.toLowerCase())}
+                        checked={selectedCategory.toLowerCase() === cat.name.toLowerCase()}
                         onChange={() => handleCategoryChange(cat.name)}
                         className="accent-brand-600 cursor-pointer rounded"
                       />
-                      <span className={selectedCategories.some((category) => category.toLowerCase() === cat.name.toLowerCase()) ? "font-bold text-brand-700" : "hover:text-gray-800"}>
+                      <span className={selectedCategory.toLowerCase() === cat.name.toLowerCase() ? "font-bold text-brand-700" : "hover:text-gray-800"}>
                         {cat.name}
                       </span>
                     </label>
@@ -283,15 +284,15 @@ function Products() {
           </div>
 
           {/* Active Filter Badges */}
-          {(searchQuery || selectedCategories.length > 0 || onlyInStock || maxPrice !== 500) && (
+          {(searchQuery || selectedCategory || onlyInStock || maxPrice !== 500) && (
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-gray-400 font-bold uppercase mr-1">Active:</span>
-              {selectedCategories.map((category) => (
-                <span key={category} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-brand-50 border border-brand-200 text-xs font-bold text-brand-700">
-                  Category: {category}
-                  <button onClick={() => removeSelectedCategory(category)} className="hover:text-brand-900 cursor-pointer font-bold">&times;</button>
+              {selectedCategory && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-brand-50 border border-brand-200 text-xs font-bold text-brand-700">
+                  Category: {selectedCategory}
+                  <button onClick={removeSelectedCategory} className="hover:text-brand-900 cursor-pointer font-bold">&times;</button>
                 </span>
-              ))}
+              )}
               {searchQuery && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-brand-50 border border-brand-200 text-xs font-bold text-brand-700">
                   Search: "{searchQuery}"
