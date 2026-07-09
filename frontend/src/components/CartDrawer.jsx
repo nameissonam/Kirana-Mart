@@ -46,11 +46,11 @@ function CartDrawer() {
         onClick={() => setCartOpen(false)}
       />
 
-      <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">
+      <div className="absolute inset-y-0 right-0 flex max-w-full pl-0 sm:pl-10">
         {/* Drawer Panel */}
         <div className="w-screen max-w-md transform bg-white shadow-2xl transition-transform duration-300 ease-in-out animate-slide-in flex flex-col h-full">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-lime-100 flex items-center justify-between bg-lime-500 text-slate-950">
+          <div className="px-4 py-4 border-b border-lime-100 flex items-center justify-between bg-lime-500 text-slate-950 sm:px-6 sm:py-5">
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-6 h-6" />
               <h2 className="text-xl font-semibold">
@@ -66,7 +66,7 @@ function CartDrawer() {
           </div>
 
           {/* Cart items list */}
-          <div className="flex-1 py-4 overflow-y-auto px-6 space-y-4">
+          <div className="flex-1 py-4 overflow-y-auto px-3 space-y-3 sm:px-6 sm:space-y-4">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <div className="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center text-brand-500 mb-4 animate-bounce">
@@ -87,7 +87,7 @@ function CartDrawer() {
               cart.map((item) => (
                 <div
                   key={getCartItemKey(item)}
-                  className="flex items-center gap-4 rounded-2xl border border-lime-100 bg-white p-3 transition hover:bg-lime-50/50"
+                  className="flex items-center gap-3 rounded-2xl border border-lime-100 bg-white p-3 transition hover:bg-lime-50/50 sm:gap-4"
                 >
                   <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
                     <img
@@ -147,7 +147,7 @@ function CartDrawer() {
 
           {/* Footer */}
           {cart.length > 0 && (
-            <div className="border-t border-gray-100 px-6 py-6 bg-slate-50 space-y-4">
+            <div className="border-t border-gray-100 px-4 py-5 bg-slate-50 space-y-4 sm:px-6 sm:py-6">
               <h3 className="text-sm font-extrabold uppercase tracking-wide text-slate-500">Basket summary</h3>
               <div className={`rounded-2xl border px-4 py-3 text-xs font-bold ${homeDeliveryAvailable ? "border-green-200 bg-green-50 text-green-700" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
                 {homeDeliveryAvailable

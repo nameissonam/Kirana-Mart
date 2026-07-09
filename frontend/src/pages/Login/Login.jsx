@@ -75,8 +75,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-slate-100 to-slate-200 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-md w-full space-y-8 bg-white/70 backdrop-blur-md p-8 rounded-3xl border border-white/50 shadow-2xl animate-fade-in">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-slate-100 to-slate-200 px-3 py-8 font-sans sm:px-6 sm:py-12 lg:px-8">
+      <div className="max-w-md w-full space-y-6 bg-white/70 backdrop-blur-md p-5 rounded-3xl border border-white/50 shadow-2xl animate-fade-in sm:space-y-8 sm:p-8">
         {/* Header */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 group">

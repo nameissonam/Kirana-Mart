@@ -69,7 +69,7 @@ function CustomerLayout() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0 group">
-            <div className="w-10 h-10 rounded-2xl bg-lime-500 flex items-center justify-center shadow-md shadow-lime-500/20 group-hover:scale-105 transition-transform">
+            <div className="h-9 w-9 rounded-2xl bg-lime-500 flex items-center justify-center shadow-md shadow-lime-500/20 transition-transform group-hover:scale-105 sm:h-10 sm:w-10">
               <span className="text-slate-950 font-extrabold text-xl">K</span>
             </div>
             <span className="hidden text-xl font-bold text-slate-900 sm:block">
@@ -130,7 +130,7 @@ function CustomerLayout() {
           </form> */}
 
           {/* Right Section */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
 
             {/* Navigation */}
             {!isAdmin && (
@@ -234,7 +234,7 @@ function CustomerLayout() {
               ) : (
                 <Link
                   to="/login"
-                  className="inline-flex items-center rounded-2xl bg-lime-500 px-3 py-2 text-sm font-bold text-slate-950 hover:bg-lime-400 sm:px-4"
+                className="inline-flex items-center rounded-2xl bg-lime-500 px-2.5 py-2 text-xs font-bold text-slate-950 hover:bg-lime-400 sm:px-4 sm:text-sm"
                 >
                   <User className="inline w-4 h-4 mr-1" />
                   Login
@@ -278,7 +278,7 @@ function CustomerLayout() {
       </header>
 
       {/* Main */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
         <Outlet />
       </main>
 

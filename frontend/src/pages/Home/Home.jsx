@@ -47,10 +47,10 @@ export default function Home() {
     <div className="space-y-6 pb-10">
       <AuthRequiredModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
 
-      <section className="overflow-hidden rounded-3xl bg-lime-400 p-6 text-slate-950 shadow-sm md:p-8">
+      <section className="overflow-hidden rounded-3xl bg-lime-400 p-5 text-slate-950 shadow-sm sm:p-6 md:p-8">
         <div className="max-w-3xl">
           <p className="text-xs font-black uppercase tracking-[0.18em]">Fresh groceries, fast</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight md:text-6xl">Daily needs delivered quick</h1>
+          <h1 className="mt-3 text-[2rem] font-black leading-tight tracking-tight sm:text-4xl md:text-6xl">Daily needs delivered quick</h1>
           <p className="mt-4 max-w-xl text-sm font-semibold text-lime-950/80 md:text-base">Milk, snacks, staples, personal care, and home essentials packed from your local KiranaMart shelves.</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button onClick={() => goTo()} className="rounded-2xl bg-slate-950 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-slate-900/20">Start shopping</button>
@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="home-categories" className="rounded-3xl bg-white px-4 py-4 shadow-sm">
+      <section id="home-categories" className="rounded-3xl bg-white px-3 py-4 shadow-sm sm:px-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
             <h2 className="text-xl font-black text-slate-950">Shop by category</h2>
@@ -67,7 +67,7 @@ export default function Home() {
           </div>
           <button onClick={() => goTo()} className="rounded-xl bg-lime-100 px-3 py-2 text-xs font-extrabold text-lime-800">View all</button>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {catalogGroups.map((group) => (
             <div key={group.name} className="rounded-2xl border border-lime-100 bg-lime-50/40 p-3">
               <div className="mb-2">

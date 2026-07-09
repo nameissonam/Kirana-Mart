@@ -86,12 +86,12 @@ export default function ProductDetails() {
     <div className="space-y-10 pb-8">
       <AuthRequiredModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
       <div className="flex items-center gap-4"><BackButton /><span className="text-sm font-bold text-slate-800">Kirana<span className="text-green-600">Mart</span></span></div>
-      <section className="grid gap-8 rounded-3xl border border-lime-100 bg-white p-5 shadow-sm lg:grid-cols-[42%_58%] lg:p-6">
+      <section className="grid gap-6 rounded-3xl border border-lime-100 bg-white p-4 shadow-sm sm:p-5 lg:grid-cols-[42%_58%] lg:gap-8 lg:p-6">
         <div className="space-y-4">
-          <div className="grid place-items-center overflow-hidden rounded-3xl border border-lime-100 bg-lime-50/60 p-5"><img src={getProductImage(product)} alt={displayName} onError={(event) => handleProductImageError(event, product)} className="aspect-square h-full w-full object-contain transition duration-500 hover:scale-105" /></div>
-          <div className="grid grid-cols-2 gap-3">
-            <button type="button" onClick={() => addSelected()} disabled={isOutOfStock} className="rounded-2xl border border-lime-600 bg-white px-6 py-4 font-extrabold text-lime-700 hover:bg-lime-50 disabled:bg-slate-300">Add to cart</button>
-            <button type="button" onClick={() => { if (addSelected(false)) navigate('/checkout'); }} disabled={isOutOfStock} className="rounded-2xl bg-lime-500 px-6 py-4 font-extrabold text-slate-950 hover:bg-lime-400 disabled:bg-slate-300">Buy now</button>
+          <div className="grid place-items-center overflow-hidden rounded-3xl border border-lime-100 bg-lime-50/60 p-4 sm:p-5"><img src={getProductImage(product)} alt={displayName} onError={(event) => handleProductImageError(event, product)} className="aspect-square h-full w-full object-contain transition duration-500 hover:scale-105" /></div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button type="button" onClick={() => addSelected()} disabled={isOutOfStock} className="rounded-2xl border border-lime-600 bg-white px-5 py-4 font-extrabold text-lime-700 hover:bg-lime-50 disabled:bg-slate-300 sm:px-6">Add to cart</button>
+            <button type="button" onClick={() => { if (addSelected(false)) navigate('/checkout'); }} disabled={isOutOfStock} className="rounded-2xl bg-lime-500 px-5 py-4 font-extrabold text-slate-950 hover:bg-lime-400 disabled:bg-slate-300 sm:px-6">Buy now</button>
           </div>
         </div>
         <div className="flex flex-col lg:pr-6">
@@ -153,7 +153,7 @@ export default function ProductDetails() {
           </div>
         </div>
       </section>
-      {recommendations.length > 0 && <section><h2 className="mb-5 text-2xl font-bold text-slate-900">Frequently Bought Together</h2><ProductSlider ariaLabel="Frequently Bought Together">{recommendations.map((item) => <div key={item._id} className="w-[calc(100vw-4.5rem)] max-w-80 shrink-0 snap-start sm:w-56 sm:max-w-none"><ProductCard product={item} compact onAuthRequired={() => setShowAuth(true)} /></div>)}</ProductSlider></section>}
+      {recommendations.length > 0 && <section><h2 className="mb-5 text-xl font-bold text-slate-900 sm:text-2xl">Frequently Bought Together</h2><ProductSlider ariaLabel="Frequently Bought Together">{recommendations.map((item) => <div key={item._id} className="w-[min(18rem,calc(100vw-3.5rem))] shrink-0 snap-start sm:w-56"><ProductCard product={item} compact onAuthRequired={() => setShowAuth(true)} /></div>)}</ProductSlider></section>}
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function ProductSection({ title, eyebrow, products, onViewAll, on
       </div>
       <ProductSlider ariaLabel={title}>
         {products.map((product) => (
-          <div key={product._id} className="w-[calc(100vw-4.5rem)] max-w-80 shrink-0 snap-start sm:w-52 sm:max-w-none lg:w-56">
+          <div key={product._id} className="w-[min(18rem,calc(100vw-3.5rem))] shrink-0 snap-start sm:w-52 lg:w-56">
             <ProductCard product={product} compact onAuthRequired={onAuthRequired} />
           </div>
         ))}

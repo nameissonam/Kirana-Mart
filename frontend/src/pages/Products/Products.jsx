@@ -154,10 +154,10 @@ function Products() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 md:flex-row md:gap-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:gap-5">
         
         {/* Filters Sidebar */}
-        <aside className="w-full max-h-[70vh] overflow-y-auto rounded-3xl border border-lime-100 bg-white p-4 self-start space-y-5 shadow-sm md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:w-64 md:p-5">
+        <aside className="w-full max-h-[70vh] overflow-y-auto rounded-3xl border border-lime-100 bg-white p-4 self-start space-y-5 shadow-sm lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:w-72 lg:p-5">
           <div className="flex items-center justify-between border-b border-gray-100 pb-3">
             <h3 className="font-extrabold text-gray-800 text-sm flex items-center gap-1.5">
               <Filter className="w-4 h-4 text-brand-600" />
@@ -176,7 +176,7 @@ function Products() {
             <h4 className="font-bold text-gray-800 text-xs uppercase tracking-wider">
               Category
             </h4>
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:block md:space-y-2.5">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:block lg:space-y-2.5">
               <label className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
                 <input
                   type="radio"
@@ -316,7 +316,7 @@ function Products() {
 
           {/* Product Cards Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 min-[460px]:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {[1, 2, 3, 4, 5, 6].map((id) => (
                 <div key={id} className="bg-white rounded-2xl border border-gray-100 p-4 space-y-4 animate-pulse">
                   <div className="h-40 bg-gray-150 rounded-xl" />
@@ -327,7 +327,7 @@ function Products() {
               ))}
             </div>
           ) : loadError ? (
-            <div className="bg-amber-50 rounded-3xl border border-amber-200 p-12 text-center max-w-xl mx-auto space-y-4 shadow-xs">
+            <div className="bg-amber-50 rounded-3xl border border-amber-200 p-6 text-center max-w-xl mx-auto space-y-4 shadow-xs sm:p-12">
               <h3 className="font-extrabold text-amber-900 text-lg">Catalog is not connected</h3>
               <p className="text-sm font-semibold text-amber-800">{loadError}</p>
               <button
@@ -338,7 +338,7 @@ function Products() {
               </button>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center max-w-md mx-auto space-y-4 shadow-xs">
+            <div className="bg-white rounded-3xl border border-gray-100 p-6 text-center max-w-md mx-auto space-y-4 shadow-xs sm:p-12">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mx-auto text-2xl">
                 🔎
               </div>
@@ -354,7 +354,7 @@ function Products() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 min-[460px]:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {filteredProducts.map((product) => (
                 <ProductCard 
                   key={product._id} 

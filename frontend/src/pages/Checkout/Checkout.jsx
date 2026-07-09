@@ -358,7 +358,7 @@ function Checkout() {
   const grandTotal = cartTotal - discount + deliveryFee + gstTax;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
       <div className="flex items-center gap-4"><BackButton /><h1 className="text-2xl font-extrabold text-gray-800">Checkout</h1></div>
 
       {!homeDeliveryAvailable && (
@@ -400,7 +400,7 @@ function Checkout() {
       </div>
 
       {/* Progress steppers */}
-      <div className="flex items-center gap-2 max-w-md">
+      <div className="flex max-w-md flex-col gap-2 min-[420px]:flex-row min-[420px]:items-center">
         <div className="flex-1 flex items-center gap-2">
           <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${stage === "address" ? "bg-brand-600 text-white" : "bg-brand-100 text-brand-700"}`}>
             1
@@ -416,11 +416,11 @@ function Checkout() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-8">
         {/* Form panel */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="space-y-6 lg:col-span-2">
           {stage === "address" && fulfillmentMethod === "home" && homeDeliveryAvailable && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+            <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-4 sm:p-6">
               <h2 className="text-lg font-bold text-gray-800">Delivery Address Details</h2>
               <form onSubmit={handleAddressNext} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -538,8 +538,8 @@ function Checkout() {
           )}
 
           {stage === "payment" && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-6">
-              <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+            <div className="bg-white rounded-2xl border border-gray-100 p-4 space-y-6 sm:p-6">
+              <div className="flex flex-col gap-2 border-b border-gray-100 pb-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-lg font-bold text-gray-800">Select Payment Option</h2>
                 <button
                   onClick={() => {
