@@ -18,7 +18,7 @@ function Products() {
   // Filter & Sort States
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [selectedCategories, setSelectedCategories] = useState(
-    searchParams.get("category") ? searchParams.get("category").split(",").filter(Boolean) : []
+    searchParams.get("category") ? searchParams.get("category").split(",").filter(Boolean).slice(0, 1) : []
   );
   const [maxPrice, setMaxPrice] = useState(500);
   const [onlyInStock, setOnlyInStock] = useState(false);
@@ -27,7 +27,7 @@ function Products() {
   // Sync state with URL params
   useEffect(() => {
     setSearchQuery(searchParams.get("search") || "");
-    setSelectedCategories(searchParams.get("category") ? searchParams.get("category").split(",").filter(Boolean) : []);
+    setSelectedCategories(searchParams.get("category") ? searchParams.get("category").split(",").filter(Boolean).slice(0, 1) : []);
     setSortBy(searchParams.get("sort") || "featured");
   }, [searchParams]);
 
@@ -108,17 +108,8 @@ function Products() {
       nextParams.delete("category");
       setSelectedCategories([]);
     } else {
-      const categoryExists = selectedCategories.some((category) => category.toLowerCase() === cat.toLowerCase());
-      const nextCategories = categoryExists
-        ? selectedCategories.filter((category) => category.toLowerCase() !== cat.toLowerCase())
-        : [...selectedCategories, cat];
-
-      setSelectedCategories(nextCategories);
-      if (nextCategories.length > 0) {
-        nextParams.set("category", nextCategories.join(","));
-      } else {
-        nextParams.delete("category");
-      }
+      setSelectedCategories([cat]);
+      nextParams.set("category", cat);
     }
     setSearchParams(nextParams);
   };
@@ -187,7 +178,8 @@ function Products() {
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:block md:space-y-2.5">
               <label className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="category"
                   checked={selectedCategories.length === 0}
                   onChange={() => handleCategoryChange("All")}
                   className="accent-brand-600 cursor-pointer rounded"
@@ -202,7 +194,8 @@ function Products() {
                   {group.categories.map((cat) => (
                     <label key={cat.name} className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="category"
                         checked={selectedCategories.some((category) => category.toLowerCase() === cat.name.toLowerCase())}
                         onChange={() => handleCategoryChange(cat.name)}
                         className="accent-brand-600 cursor-pointer rounded"
