@@ -114,17 +114,17 @@ const seedCategories = async () => {
 // Seed starter products without deleting products added from the admin dashboard.
 const seedProducts = async () => {
   try {
-    const existingCount = await Product.countDocuments();
-    if (existingCount >= 12) {
-      console.log("✓ Product catalog already seeded");
-      return;
-    }
-
     let addedCount = 0;
     for (const product of defaultProducts) {
       const result = await Product.updateOne(
         { name: product.name },
-        { $setOnInsert: product },
+        {
+          $set: {
+            image: product.image,
+            images: product.images || [],
+          },
+          $setOnInsert: product,
+        },
         { upsert: true }
       );
       if (result.upsertedCount > 0) {
