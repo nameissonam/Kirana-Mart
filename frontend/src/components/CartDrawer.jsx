@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { getProductImage } from "../utils/productImages";
+import { getProductDisplayName } from "../utils/productDisplay";
 import { DEFAULT_STORE_SETTINGS, getStoreSettings } from "../services/settingsService";
 import { Close, Trash, Plus, Minus, ShoppingCart } from "./Icons";
 
@@ -91,7 +92,7 @@ function CartDrawer() {
                   <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
                     <img
                       src={getProductImage(item)}
-                      alt={item.name}
+                      alt={getProductDisplayName(item)}
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />
@@ -99,7 +100,7 @@ function CartDrawer() {
 
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-gray-800 text-sm truncate">
-                      {item.name}
+                      {getProductDisplayName(item)}
                     </h4>
                     <p className="text-gray-500 text-xs mt-0.5">
                       ₹{item.price} · {item.unit || "piece"}

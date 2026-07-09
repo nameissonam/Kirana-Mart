@@ -62,7 +62,7 @@ const vegetableProducts = [
   "Potato", "Onion", "Tomato", "Garlic", "Ginger", "Green Chilli", "Capsicum", "Cabbage", "Cauliflower", "Brinjal",
   "Lady Finger", "Cucumber", "Spinach", "Coriander", "Mint", "Beetroot", "Radish", "Pumpkin", "Bottle Gourd", "Bitter Gourd",
 ].map((name, index) => ({
-  name: `${rotate(vegBrands, index)} ${name}`,
+  name,
   brand: rotate(vegBrands, index),
   description: `Fresh ${name.toLowerCase()} for everyday Indian cooking.`,
   category: "Vegetables & Fruits",
@@ -75,7 +75,7 @@ const vegetableProducts = [
 const fruitProducts = [
   "Banana", "Apple", "Mango", "Orange", "Grapes", "Watermelon", "Papaya", "Guava", "Kiwi", "Pineapple", "Pear", "Pomegranate", "Coconut", "Muskmelon",
 ].map((name, index) => ({
-  name: `${rotate(fruitBrands, index)} ${name}`,
+  name,
   brand: rotate(fruitBrands, index),
   description: `Naturally sweet ${name.toLowerCase()} picked for quick grocery baskets.`,
   category: "Vegetables & Fruits",
