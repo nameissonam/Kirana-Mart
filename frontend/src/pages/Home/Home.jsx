@@ -70,9 +70,8 @@ export default function Home() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {catalogGroups.map((group) => (
             <div key={group.name} className="rounded-2xl border border-lime-100 bg-lime-50/40 p-3">
-              <div className="mb-2 flex items-center justify-between gap-2">
+              <div className="mb-2">
                 <h3 className="line-clamp-1 text-xs font-black uppercase tracking-wide text-lime-800">{group.name}</h3>
-                <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-lime-700">{group.categories.length}</span>
               </div>
               <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2">
                 {group.categories.map((category) => (
