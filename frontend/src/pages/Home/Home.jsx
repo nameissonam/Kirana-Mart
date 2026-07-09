@@ -41,10 +41,6 @@ export default function Home() {
     cleaning: products.filter((product) => includesAny(product, ["cleaning", "cleaner", "repellent", "household"])).slice(0, 8),
   }), [products]);
 
-  const categorySlides = catalogGroups.flatMap((group) =>
-    group.categories.map((category) => ({ ...category, parent: group.name }))
-  );
-
   const goTo = (query = "") => navigate(query ? `/products?${query}` : "/products");
 
   return (
@@ -71,19 +67,28 @@ export default function Home() {
           </div>
           <button onClick={() => goTo()} className="rounded-xl bg-lime-100 px-3 py-2 text-xs font-extrabold text-lime-800">View all</button>
         </div>
-        <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {categorySlides.map((category) => (
-            <button
-              key={`${category.parent}-${category.name}`}
-              onClick={() => goTo(`category=${encodeURIComponent(category.name)}`)}
-              className="group flex w-28 shrink-0 flex-col items-center gap-2 rounded-2xl border border-lime-100 bg-lime-50/40 px-2 py-3 text-center transition hover:-translate-y-0.5 hover:bg-lime-50 hover:shadow-md"
-            >
-              <span className="grid h-14 w-14 overflow-hidden rounded-2xl bg-white p-1 shadow-sm">
-                <img src={category.image} alt={category.name} loading="lazy" className="h-full w-full object-cover" />
-              </span>
-              <span className="line-clamp-2 min-h-8 text-xs font-black leading-4 text-slate-800 group-hover:text-lime-700">{category.name}</span>
-              <span className="line-clamp-1 max-w-full rounded-full bg-white px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-lime-700">{category.parent}</span>
-            </button>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {catalogGroups.map((group) => (
+            <div key={group.name} className="rounded-2xl border border-lime-100 bg-lime-50/40 p-3">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <h3 className="line-clamp-1 text-xs font-black uppercase tracking-wide text-lime-800">{group.name}</h3>
+                <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-lime-700">{group.categories.length}</span>
+              </div>
+              <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2">
+                {group.categories.map((category) => (
+                  <button
+                    key={category.name}
+                    onClick={() => goTo(`category=${encodeURIComponent(category.name)}`)}
+                    className="group flex min-w-full snap-center flex-col items-center gap-2 rounded-xl bg-white px-3 py-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <span className="grid h-16 w-16 overflow-hidden rounded-2xl bg-lime-50 p-1 shadow-sm">
+                      <img src={category.image} alt={category.name} loading="lazy" className="h-full w-full object-cover" />
+                    </span>
+                    <span className="line-clamp-2 min-h-9 text-sm font-black leading-4 text-slate-800 group-hover:text-lime-700">{category.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
