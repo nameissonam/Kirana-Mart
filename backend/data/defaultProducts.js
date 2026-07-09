@@ -35,6 +35,26 @@ const imageByCategory = {
 
 const rotate = (items, index) => items[index % items.length];
 
+const safeImageQueryByCategory = {
+  "Sexual Wellness": "pharmacy wellness product",
+  "Feminine Hygiene": "hygiene product pack",
+  "Health & Pharma": "medicine pack",
+  "Paan Corner": "mouth freshener",
+};
+
+const getImageQuery = (product, category) => {
+  if (safeImageQueryByCategory[category]) return safeImageQueryByCategory[category];
+  const brand = product.brand || "";
+  const name = product.name || "";
+  const brandedName = brand && !name.toLowerCase().startsWith(brand.toLowerCase()) ? `${brand} ${name}` : name;
+  return `${brandedName} ${category}`.trim();
+};
+
+const getProductImage = (product, category, index) => {
+  const query = encodeURIComponent(getImageQuery(product, category));
+  return `https://loremflickr.com/700/700/${query}?lock=${1200 + index}`;
+};
+
 const vegBrands = ["Fresho", "Safe Harvest", "Organic India", "Organic Tattva", "Farmley Fresh", "Local Farm"];
 const fruitBrands = ["Fresho", "Kimaye", "Organic India", "Local Farm"];
 
@@ -301,11 +321,17 @@ const productGroups = [
   },
 ];
 
+let imageIndex = 0;
+
 const defaultProducts = productGroups.flatMap(({ category, products }) =>
-  products.map((product, index) => ({
+  products.map((product, index) => {
+    const image = getProductImage(product, category, imageIndex);
+    imageIndex += 1;
+
+    return {
     discountPercentage: index % 7 === 0 ? 5 : 0,
-    image: imageByCategory[category],
-    images: [imageByCategory[category]],
+    image,
+    images: [image, imageByCategory[category]],
     lowStockThreshold: 15,
     stock: product.stock || 50,
     type: product.type || "Veg",
@@ -314,7 +340,8 @@ const defaultProducts = productGroups.flatMap(({ category, products }) =>
     price: product.price || 99,
     category,
     ...product,
-  }))
+    };
+  })
 );
 
 module.exports = defaultProducts;
