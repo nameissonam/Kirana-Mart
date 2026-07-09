@@ -116,14 +116,15 @@ const seedProducts = async () => {
   try {
     let addedCount = 0;
     for (const product of defaultProducts) {
+      const { image, images, ...productOnInsert } = product;
       const result = await Product.updateOne(
         { name: product.name },
         {
           $set: {
-            image: product.image,
-            images: product.images || [],
+            image,
+            images: images || [],
           },
-          $setOnInsert: product,
+          $setOnInsert: productOnInsert,
         },
         { upsert: true }
       );
